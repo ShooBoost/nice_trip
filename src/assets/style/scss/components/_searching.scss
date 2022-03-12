@@ -1,0 +1,9 @@
+.textUnderline {
+  text-decoration: underline #e0da48;
+}
+.letterSpacingLg {
+  letter-spacing: 1rem;
+}
+.focusPrimary:focus {
+  box-shadow: 0 0 0 0.2rem rgba($color-primary, 0.25);
+}
