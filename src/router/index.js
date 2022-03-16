@@ -8,12 +8,12 @@ const routes = [
     component: Home,
   },
   {
-    path: "/spotDetail",
+    path: "./spotDetail",
     name: "spotDetail",
     component: () =>
       import(/* webpackChunkName: "spotDetail" */ "../views/spotDetail.vue"),
   },{
-    path: "/searching",
+    path: "./searching",
     name: "searching",
     component: () =>
       import(/* webpackChunkName: "searching" */ "../views/searching.vue"),
