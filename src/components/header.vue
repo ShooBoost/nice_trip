@@ -1,13 +1,13 @@
 <template>
   <nav class="navbar navbar-expand-md navbar-light bg-white fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/"
+      <router-link class="navbar-brand" to="/"
         ><img
           class="d-none d-md-block"
           src="../assets/Logo-desktop.svg"
           alt="Logo" />
         <img class="d-md-none" src="../assets/Logo-mobile.svg" alt="Logo"
-      /></a>
+      /></router-link>
       <button
         class="navbar-toggler border-0"
         type="button"
@@ -22,13 +22,13 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto text-center">
           <li class="nav-item">
-            <a class="nav-link" href="/searching?theme=ScenicSpot">探索景點</a>
+            <router-link class="nav-link" to="/searching?theme=ScenicSpot">探索景點</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/searching?theme=Activity">節慶活動</a>
+            <router-link class="nav-link" to="/searching?theme=Activity">節慶活動</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/searching?theme=Restaurant">品嚐美食</a>
+            <router-link class="nav-link" to="/searching?theme=Restaurant">品嚐美食</router-link>
           </li>
         </ul>
       </div>
