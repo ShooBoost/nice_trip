@@ -94,9 +94,9 @@
         />
         <!-- searching input - end -->
         <!-- searching button - start -->
-        <a
+        <router-link
           class="btn btn-primary w-100 btn-lg text-white letterSpacingLg fs-6"
-          :href="
+          :to="
             keywordsForSearch.length > 0
               ? `/searching?theme=${themeForSearch}&keywords=${keywordsForSearch}`
               : `/searching?theme=${themeForSearch}`
@@ -104,7 +104,7 @@
         >
           <span class="material-icons align-text-top"> search </span>
           搜尋
-        </a>
+        </router-link>
         <!-- searching button - end -->
       </div>
       <!-- banner searching area - end -->
@@ -132,7 +132,7 @@
       "
     >
       <h2 class="fs-4 fsLg1dot5 d-inline fw-normal m-0">近期活動</h2>
-      <a class="link-secondary m-0" href="/searching?theme=Activity">查看更多活動 ❯</a>
+      <router-link class="link-secondary m-0" to="/searching?theme=Activity">查看更多活動 ❯</router-link>
     </div>
     <Card
       apiType="Activity"
@@ -152,7 +152,7 @@
       "
     >
       <h2 class="fs-4 fsLg1dot5 d-inline fw-normal m-0">熱門打卡景點</h2>
-      <a class="link-secondary m-0" href="/searching?theme=ScenicSpot">查看更多景點 ❯</a>
+      <router-link class="link-secondary m-0" to="/searching?theme=ScenicSpot">查看更多景點 ❯</router-link>
     </div>
     <carouselOnMobile
       apiType="ScenicSpot"
@@ -172,7 +172,7 @@
       "
     >
       <h2 class="fs-4 fsLg1dot5 d-inline fw-normal m-0">一再回訪美食</h2>
-      <a class="link-secondary m-0" href="/searching?theme=Restaurant">查看更多美食 ❯</a>
+      <router-link class="link-secondary m-0" to="/searching?theme=Restaurant">查看更多美食 ❯</router-link>
     </div>
     <carouselOnMobile
       apiType="Restaurant"

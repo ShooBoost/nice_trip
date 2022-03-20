@@ -22,9 +22,9 @@
         overflow-hidden
       "
     >
-      <a
+      <router-link
         v-if="areWordsOnImg"
-        :href="'/spotDetail?theme=' + apiType + '&id=' + spot[spotIDKey]"
+        :to="'/spotDetail?theme=' + apiType + '&id=' + spot[spotIDKey]"
         target="_blank"
         class="
           w-100
@@ -40,7 +40,7 @@
         "
       >
         <h3 class="text-white fs-5 fsLg3">{{ spot.City }} | {{ spot[spotNameKey] }}</h3>
-      </a>
+      </router-link>
       <img
         :src="spot.Picture.PictureUrl1"
         :alt="spot.PictureDescription1 || spot[spotNameKey]"

@@ -1,7 +1,7 @@
 <template>
-  <a
+  <router-link
     class="w-100 h-100"
-    :href="'/spotDetail?theme=' + apiType + '&id=' + spotId"
+    :to="'/spotDetail?theme=' + apiType + '&id=' + spotId"
     target="_blank"
   >
     <div
@@ -38,7 +38,7 @@
         place </span
       >{{ spotCity }}
     </p>
-  </a>
+  </router-link>
 </template>
 
 <script>

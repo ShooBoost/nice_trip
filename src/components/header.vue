@@ -22,13 +22,13 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto text-center">
           <li class="nav-item">
-            <router-link class="nav-link" to="/searching?theme=ScenicSpot">探索景點</router-link>
+            <router-link class="nav-link" to="/searching?theme=ScenicSpot" push>探索景點</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/searching?theme=Activity">節慶活動</router-link>
+            <router-link class="nav-link" to="/searching?theme=Activity" push>節慶活動</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/searching?theme=Restaurant">品嚐美食</router-link>
+            <router-link class="nav-link" to="/searching?theme=Restaurant" push>品嚐美食</router-link>
           </li>
         </ul>
       </div>

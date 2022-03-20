@@ -19,15 +19,14 @@
   <article class="container">
     <h1 class="mb-0dot625 mb-lg-1 fs-4 fsLg1dot5">{{ spotDetail.Name }}</h1>
     <div class="mb-1dot125 mb-lg-2">
-      <!-- :href="`/searching?theme=${item}`" -->
-      <a
+      <router-link
         v-for="(item, i) in spotDetail.classList"
         :key="i"
-        :href="`/searching?theme=${this.$route.query.theme}&category=${item}`"
+        :to="`/searching?theme=${this.$route.query.theme}&category=${item}`"
         class="btn btn-outline-golden rounded-pill fs-6dot875 fsLg5 me-0dot5"
       >
         # {{ item }}
-      </a>
+      </router-link>
     </div>
     <p class="fs-5dot125 fsLg5 fw-bold mb-0dot5 mb-lg-0dot625">景點介紹：</p>
     <p class="lh-lg mb-1dot875 mb-lg-3dot75">
@@ -78,8 +77,8 @@
           </div>
           <!-- map - end -->
           <p class="mb-1dot25 fs-5dot125 fsLg5 fw-bold">周邊資訊：</p>
-          <a
-            :href="
+          <router-link
+            :to="
               '/searching?theme=Activity&lat=' +
               spotDetail.Position.PositionLat +
               '&lon=' +
@@ -102,9 +101,9 @@
               />
               <p class="text-primary fw-bold">附近活動</p>
             </div>
-          </a>
-          <a
-            :href="
+          </router-link>
+          <router-link
+            :to="
               '/searching?theme=Restaurant&lat=' +
               spotDetail.Position.PositionLat +
               '&lon=' +
@@ -127,9 +126,9 @@
               />
               <p class="text-primary fw-bold">附近美食</p>
             </div>
-          </a>
-          <a
-            :href="
+          </router-link>
+          <router-link
+            :to="
               '/searching?theme=ScenicSpot&lat=' +
               spotDetail.Position.PositionLat +
               '&lon=' +
@@ -152,7 +151,7 @@
               />
               <p class="text-primary fw-bold">附近景點</p>
             </div>
-          </a>
+          </router-link>
         </div>
       </div>
     </div>
@@ -172,10 +171,10 @@
       <h2 class="fs-4 fsLg1dot5 d-inline fw-normal m-0">
         還有這些不能錯過的{{ themeTC }}
       </h2>
-      <a
+      <router-link
         class="text-secondary m-0"
-        :href="'/searching?theme=' + $route.query.theme"
-        >查看更多{{ themeTC }} ❯</a
+        :to="'/searching?theme=' + $route.query.theme"
+        >查看更多{{ themeTC }} ❯</router-link
       >
     </div>
     <carouselOnMobile

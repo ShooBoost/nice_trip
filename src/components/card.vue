@@ -1,10 +1,10 @@
 <template>
   <div class="row" v-if="spotsList[0]">
-    <a
+    <router-link
       class="col col-12 col-lg-6 d-flex mb-0dot75 hoverImgBigger"
       v-for="(spot, i) in spotsList"
       :key="i"
-      :href="'/spotDetail?theme='+apiType+'&id='+spot[spotIDKey]"
+      :to="'/spotDetail?theme='+apiType+'&id='+spot[spotIDKey]"
       target="_blank"
     >
       <div
@@ -79,13 +79,12 @@
           </p>
           <a
             class="link-primary stretched-link d-none d-lg-inline"
-            href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwTibxpHQtnHzTgHzkyi_JZZgUfufJ9r6g9w&usqp=CAU"
             target="_blank"
             >詳細介紹 ❯</a
           >
         </div>
       </div>
-    </a>
+    </router-link>
   </div>
 </template>
 
