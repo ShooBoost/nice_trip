@@ -1,11 +1,11 @@
 <template>
   <!-- banner - start -->
-  <section class="container pt-5dot5 pt-lg-10dot125 mb-2 mb-lg-4">
+  <section class="container mb-3 mb-lg-4 pt-3 pt-md-5">
     <div class="row">
       <!-- banner title - start -->
       <div class="col-12 col-lg-6 offset-lg-1 mb-2 mb-lg-0">
         <div>
-          <h1 class="mb-1 fw-normal lh-sm">
+          <h1 class="mb-1 mb-md-1 fw-normal lh-sm">
             探索<ins class="textUnderline">台灣之美</ins><br />
             讓我們更親近這片土地
           </h1>
@@ -117,7 +117,7 @@
       areWordsOnImg="yes"
       apiType="ScenicSpot"
       :carsouelList="carsouelList"
-      class="mb-2"
+      class="mb-3 mb-md-2"
     />
   </section>
   <!-- carsousel - end -->
@@ -142,7 +142,7 @@
   </section>
   <!-- recent activities - end -->
   <!-- popular spot - start -->
-  <section class="container mb-3 mb-lg-2">
+  <section class="container mb-1dot5 mb-lg-2">
     <div
       class="
         d-flex
@@ -162,7 +162,7 @@
   </section>
   <!-- popular spot - end -->
   <!-- resturant - start -->
-  <section class="container mb-4dot5 mb-lg-7dot5">
+  <section class="container mb-4dot5">
     <div
       class="
         d-flex

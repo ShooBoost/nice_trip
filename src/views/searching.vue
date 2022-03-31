@@ -1,4 +1,4 @@
-<template>
+<template class="">
   <!-- vue loading overlay - start -->
   <loading
     v-model:active="isLoading"
@@ -7,18 +7,26 @@
   />
   <!-- vue loading overlay - end -->
 
-  <!-- Breadcrumb - start -->
-  <section class="container pt-5dot5 pt-lg-8dot75 mb-1 mb-lg-2dot5">
+  <section
+    id="searchingForm"
+    class="
+      container
+      pt-2
+      sticky-top
+      bg-white
+      mb-2 mb-md-3dot75
+      transitionSmooth
+    "
+  >
+    <!-- Breadcrumb - start -->
     <Breadcrumb
+      class="mb-1 mb-lg-2dot5"
       :apiType="currentTheme"
-      :city="$route.query.city"
+      :city="currentCity"
       :category="this.$route.query.category"
     />
-  </section>
-  <!-- Breadcrumb - end -->
-
-  <!-- searching bar - start -->
-  <section class="container mb-1dot5 mb-3dot75">
+    <!-- Breadcrumb - end -->
+    <!-- searching bar - start -->
     <div class="row">
       <!-- 縣市 - start -->
       <div class="col-12 col-lg-3">
@@ -42,15 +50,23 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            {{ this.$route.query.city || "選擇縣市" }}
+            {{ currentCity.CityName || "選擇縣市" }}
           </button>
           <ul
-            class="dropdown-menu w-100 mt-0dot5 p-0 cursorPointer"
+            class="
+              dropdown-menu
+              w-100
+              maxHeight50vh
+              overflow-scroll
+              mt-0dot5
+              p-0
+              cursorPointer
+            "
             aria-labelledby="dropdownMenuButton1"
           >
             <li v-if="this.$route.query.city">
               <a
-                @click="showSearchResults({ city: '' })"
+                @click="renewRouterQuery({ city: {} })"
                 class="dropdown-item py-0dot75 px-2"
                 >選擇縣市</a
               >
@@ -60,7 +76,7 @@
               <hr v-if="i !== 0" class="dropdown-divider m-0" />
               <a
                 @click="
-                  showSearchResults({
+                  renewRouterQuery({
                     city: item,
                   })
                 "
@@ -97,12 +113,20 @@
             {{ this.$route.query.category || "選擇類別" }}
           </button>
           <ul
-            class="dropdown-menu w-100 mt-0dot5 p-0 cursorPointer"
+            class="
+              dropdown-menu
+              w-100
+              maxHeight50vh
+              overflow-scroll
+              mt-0dot5
+              p-0
+              cursorPointer
+            "
             aria-labelledby="dropdownMenuButton1"
           >
             <li v-if="this.$route.query.category">
               <a
-                @click="showSearchResults({ category: '' })"
+                @click="renewRouterQuery({ category: '' })"
                 class="dropdown-item py-0dot75 px-2"
                 >選擇類別</a
               >
@@ -111,7 +135,7 @@
             <li v-for="(item, i) in allCategoriesOfCurrentTheme" :key="i">
               <hr v-if="i !== 0" class="dropdown-divider m-0" />
               <a
-                @click="showSearchResults({ category: item.name })"
+                @click="renewRouterQuery({ category: item.name })"
                 class="dropdown-item py-0dot75 px-2"
                 >{{ item.name }}</a
               >
@@ -136,25 +160,34 @@
           placeholder="你想去哪裡？請輸入關鍵字"
           aria-label="搜尋欄，請填入關鍵字進行搜尋"
           v-model="keywords"
+          @keyup.enter="renewRouterQuery({ keywords: keywords })"
         />
       </div>
       <!-- keywords - end -->
-      <div class="col-12 col-lg-2">
+      <div class="col-12 col-lg-2 d-none d-lg-block">
         <button
-          @click="getSearchingResults"
-          class="btn btn-primary w-100 btn-lg text-white letterSpacingLg fs-6"
+          @click="replaceRouterByNewCityAndCategory({})"
+          class="
+            btn btn-primary
+            w-100
+            btn-lg
+            text-white
+            fs-6
+            d-flex
+            justify-content-around
+          "
           type="submit"
         >
           <span class="material-icons align-text-top"> search </span>
-          搜尋
+          <p class="letterSpacingLg">搜尋</p>
         </button>
       </div>
     </div>
+    <!-- searching bar - end -->
   </section>
-  <!-- searching bar - end -->
 
   <!-- allCategoriesOfCurrentTheme - start -->
-  <section class="container" v-if="!showResults">
+  <section v-if="!showResults" class="container pb-5 pb-md-0dot75">
     <h2 class="fs-4 fsLg1dot5 fw-normal m-0 mb-0dot5 mb-lg-0dot75">熱門分類</h2>
     <div class="row">
       <div
@@ -163,7 +196,7 @@
         :key="i"
       >
         <div
-          @click="showSearchResults({ category: item.name })"
+          @click="replaceRouterByNewCityAndCategory({ category: item.name })"
           class="
             w-100
             paddingTop53Percent
@@ -209,19 +242,17 @@
   </section>
   <!-- allCategoriesOfCurrentTheme - end -->
   <!-- searching result - start -->
-  <section class="container" v-if="showResults">
+  <section v-else class="container h-100 mb-0dot5 mb-lg-0dot75">
     <h2
-      class="fs-4 fsLg1dot5 fw-normal m-0 mb-0dot5 mb-lg-0dot75"
+      class="fs-4 fsLg1dot5 fw-normal m-0"
       v-if="resultSpotsList.length === 0"
     >
       Oops 暫無適合的搜尋結果
     </h2>
-    <h2 class="fs-4 fsLg1dot5 fw-normal m-0 mb-0dot5 mb-lg-0dot75" v-else>
-      搜尋結果
-    </h2>
-    <div class="row">
+    <h2 class="fs-4 fsLg1dot5 fw-normal mb-1" v-else>搜尋結果</h2>
+    <div class="row pb-4">
       <div
-        class="col-6 col-lg-3 mb-1dot25 mb-2dot25"
+        class="col-6 col-lg-3 mb-1dot25 mb-md-2dot25"
         v-for="(item, i) in resultSpotsList.slice(
           0,
           amountsOfSpotsDurningEachResultShowingStage * stageOfResultShowing
@@ -274,6 +305,8 @@ export default {
   data() {
     return {
       currentTheme: this.$route.query.theme,
+      currentThemeName: this.$route.query.theme + "Name",
+      currentCity: {},
 
       // vue loading overlay
       isLoading: false,
@@ -281,14 +314,14 @@ export default {
 
       // searching bar
       cityList: [],
-      keywords: "",
+      keywords: this.$route.query.keywords || "",
 
       // spot data from TDX
       apiParameters: {},
       allSpotsOfCurrentTheme: [],
       allCategoriesOfCurrentTheme: [],
       resultSpotsList: [],
-      showResults: true,
+      showResults: false,
       amountsOfSpotsDurningEachResultShowingStage: 8,
       stageOfResultShowing: 1,
 
@@ -297,9 +330,14 @@ export default {
     };
   },
   watch: {
-    $route() {
-      this.currentTheme = this.$route.query.theme;
-      this.showSearchResults({})
+    $route(from, to) {
+      if (from.query.theme === to.query.theme) {
+        this.currentTheme = this.$route.query.theme;
+        this.currentThemeName = this.$route.query.theme + "Name";
+        this.renewSearchingResults();
+      } else {
+        this.$router.go();
+      }
     },
   },
   methods: {
@@ -315,7 +353,6 @@ export default {
       this.isLoading = true;
       var _this = this;
       _this.allSpotsOfCurrentTheme = await _this.getAllSpotsOfCurrentTheme();
-      // console.log(_this.allSpotsOfCurrentTheme)
       (this.resultSpotsList = _this.allSpotsOfCurrentTheme),
         await _this.allSpotsOfCurrentTheme.forEach(function (
           spotOfCurrentTheme
@@ -364,27 +401,120 @@ export default {
       _this.isLoading = false;
     },
 
+    renewRouterQuery({
+      query = JSON.parse(JSON.stringify(this.$route.query)),
+      city = query.city,
+      category = query.category,
+      keywords = query.keywords,
+    }) {
+      if (city && Object.keys(city).length > 0) {
+        query.city = city.City || city;
+      } else {
+        delete query.city;
+      }
+
+      if (category) {
+        query.category = category;
+      } else {
+        delete query.category;
+      }
+
+      if (keywords) {
+        query.keywords = keywords;
+      } else {
+        delete query.keywords;
+      }
+
+      this.$router.replace({ query });
+    },
+    renewSearchingResults(
+      query = JSON.parse(JSON.stringify(this.$route.query)),
+      queryCity = query.city,
+      queryCategory = query.category,
+      keywords = query.keywords
+    ) {
+      this.currentCity = {};
+      if (queryCity) {
+        let city = this.cityList.find((city) => {
+          return city.City === queryCity;
+        });
+        this.currentCity = city;
+      }
+
+      this.resultSpotsList = this.allSpotsOfCurrentTheme.filter((spot) => {
+        let sameCity = true;
+        let sameCategory = true;
+        let includeKeywords = true;
+        if (Object.keys(this.currentCity).length) {
+          sameCity = spot.City
+            ? spot.City === this.currentCity.CityName
+            : false;
+        }
+        if (queryCategory) {
+          switch (this.currentTheme) {
+            case "ScenicSpot":
+              sameCategory =
+                spot.Class1 === queryCategory ||
+                spot.Class2 === queryCategory ||
+                spot.Class3 === queryCategory;
+              break;
+            case "Restaurant":
+              sameCategory = spot.Class === queryCategory;
+              break;
+            case "Activity":
+              sameCategory =
+                spot.Class1 === queryCategory || spot.Class2 === queryCategory;
+              break;
+          }
+        }
+        if (keywords) {
+          let reg = new RegExp(keywords);
+          includeKeywords = reg.test(spot[this.currentThemeName]);
+        }
+        return sameCity && sameCategory && includeKeywords;
+      });
+
+      this.showResults = true;
+    },
+
+    replaceRouterByNewCityAndCategory({
+      city = this.$route.query.city,
+      category = this.$route.query.category,
+    }) {
+      let urlQuery = this.setCityParameterForTdxApi({ item: city });
+
+      urlQuery = this.setClassParameterForTdxApi({
+        category: category,
+        query: urlQuery,
+      });
+      this.$router.replace({ query: urlQuery });
+    },
+
     // 使用者選擇的城市
-    setCityParameterForGetTdxData({ item = "", query = JSON.parse(JSON.stringify(this.$route.query)) }) {
-      console.log("queryInCity", query);
+    setCityParameterForTdxApi({
+      item = "",
+      query = JSON.parse(JSON.stringify(this.$route.query)),
+    }) {
       if (item) {
+        let city = this.cityList.find((city) => {
+          return city.City === item || city.CityName === item;
+        });
+        console.log("city", city, "item", item, "this.cityList", this.cityList);
+        this.currentCity = city;
         this.apiParameters.city = item.City ? item.City : item;
-        // let query = { ...this.$route.query, city: item.CityName ? item.CityName : item };
         query.city = this.apiParameters.city;
       } else {
         this.apiParameters.city = "";
         delete query.city;
       }
-      // this.$router.replace({ query });
       return query;
     },
 
     // 使用者選擇的類別
-    setClassParameterForGetTdxData({
+    setClassParameterForTdxApi({
       category = "",
       query = JSON.parse(JSON.stringify(this.$route.query)),
     }) {
-      console.log("query in class", query);
       if (category) {
         query.category = category;
         // 因為不同主題的 api url 格式不同
@@ -408,36 +538,6 @@ export default {
         delete query.category;
       }
       return query;
-      // console.log("category", this.$route.query);
-      // this.getSearchingResults();
-    },
-
-    // 當使用者按下 allCategoriesOfCurrentTheme 的任一類別後，顯示該類別的所有景點
-    // getResultsOfSpecificCategory(item) {
-    //   this.category = item.name;
-    //   this.resultSpotsList = item.spots;
-    //   this.showResults = true;
-    // },
-    showSearchResults({
-      city = this.$route.query.city,
-      category = this.$route.query.category,
-    }) {
-      console.log("city", city, "category", category);
-
-      let urlQuery = this.setCityParameterForGetTdxData({ item: city });
-      console.log("urlQuery", urlQuery);
-
-      urlQuery = this.setClassParameterForGetTdxData({
-        category: category,
-        query: urlQuery,
-      });
-      this.$router.replace({ query: urlQuery });
-
-      // this.$router.push({ query: urlQuery });
-
-      console.log("urlQuery", urlQuery, "$route.query", this.$route.query);
-
-      this.getSearchingResults();
     },
 
     // 當使用者按下搜尋鍵後，取得搜尋結果
@@ -446,24 +546,27 @@ export default {
       var _this = this;
       this.stageOfResultShowing = 1;
       this.apiParameters["apiType"] = this.currentTheme;
-
       this.resultSpotsList = await _this.getSpotsFromTdx(_this.apiParameters);
-      // console.log("_this.apiParameters", _this.apiParameters);
-
-      // 如果使用者有指定搜尋關鍵字，我們要整理出符合關鍵字的結果
-      if (this.keywords) {
-        this.resultSpotsList = this.resultSpotsList.filter(function (spot) {
-          var reg = new RegExp(_this.keywords.split().join("*"));
-          return reg.test(spot.Name);
-        });
-      }
-      // console.log(_this.resultSpotsList);
-      // this.isLoading = false;
       this.showResults = true;
+      this.filterSpotsByKeyword({});
+      console.log("this.resultSpotsList", this.resultSpotsList);
+    },
+    filterSpotsByKeyword({ keywords = this.keywords }) {
+      console.log("filterSpotsByKeyword");
+      // if(!keywords)
+      var _this = this;
+      var reg = new RegExp(keywords);
+      console.log(reg);
+      this.resultSpotsList = this.resultSpotsList.filter(function (spot) {
+        return reg.test(spot[_this.currentThemeName]);
+      });
     },
   },
+
   mounted() {
-    var _this = this;
+    let searchingForm = document.getElementById("searchingForm");
+    let latestScrollY = window.scrollY + 10;
+    let _this = this;
     window.addEventListener("scroll", function () {
       if (
         _this.showResults &&
@@ -471,8 +574,35 @@ export default {
           document.querySelector("body").clientHeight - 10
       ) {
         _this.stageOfResultShowing += 1;
-      };
-      console.log("window.scrollY", window.scrollY, " window.innerHeight",  window.innerHeight, "document.querySelector(body).clientHeight", document.querySelector("body").clientHeight);
+      }
+      // console.log(
+      //   "window.scrollY",
+      //   window.scrollY,
+      //   " window.innerHeight",
+      //   window.innerHeight,
+      //   "document.querySelector(body).clientHeight",
+      //   document.querySelector("body").clientHeight
+      // );
+
+      console.log(
+        "window.scrollY+10<=latestScrollY",
+        window.scrollY + 10,
+        latestScrollY
+      );
+
+      if (window.scrollY <= latestScrollY) {
+        searchingForm.style.top = "0px";
+        // searchingForm.classList.add('class', 'visible')
+        // searchingForm.classList.remove('class', 'topNegative300')
+      } else {
+        searchingForm.style.top = "-300px";
+        // searchingForm.classList.add('class', 'topNegative300')
+        // searchingForm.classList.remove('class', 'visible')
+
+        // searchingForm.setAttribute('class', 'invisible')
+        // searchingForm.classList.toggle('invisible')
+      }
+      latestScrollY = window.scrollY;
     });
   },
   async created() {
@@ -491,23 +621,25 @@ export default {
       ];
       this.getSearchingResults();
       this.apiParameters = {};
-    } else if (this.$route.query.keywords) {
-      this.keywords = this.$route.query.keywords;
-      this.getSearchingResults();
+    } else if (
+      this.$route.query.city ||
+      this.$route.query.category ||
+      this.$route.query.keywords
+    ) {
+      console.log(this.$route.query);
+      // this.replaceRouterByNewCityAndCategory({ city: this.$route.query.city });
+      // this.getSearchingResults();
+      this.renewSearchingResults();
     }
-    // else if (this.$route.query.city) {
-    //   this.apiParameters["filter"] = [
-    //     `contains(City,'${this.$route.query.city}') or contains(Address,'${this.$route.query.city}')`,
-    //   ];
+
+    // else if (this.$route.query.keywords) {
+    //   this.keywords = this.$route.query.keywords;
     //   this.getSearchingResults();
-    //   // this.apiParameters = {};
-    // } else if (
-    //   this.$route.query.category
-    // ) {
-    //   this.setClassParameterForGetTdxData(this.$route.query.category);
     // }
-    console.log(this.$route.query);
-    this.showSearchResults({ city: this.$route.query.city });
+
+    // if (this.$route.query.keywords) {
+    //   this.filterSpotsByKeyword();
+    // }
   },
 };
 </script>

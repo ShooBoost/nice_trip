@@ -127,3 +127,11 @@
   z-index: 1;
 }
 /* z-index - end */
+
+/* transition - start */
+.transitionSmooth {
+  transition: 0.3s;
+  transition-timing-function: ease-in-out
+}
+/* transition - end */
+

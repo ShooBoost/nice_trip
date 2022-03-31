@@ -1,16 +1,17 @@
 <template>
   <!-- Breadcrumb - start -->
-  <section class="container pt-5dot5 pt-lg-8dot75">
+  <section class="container pt-2 pt-lg-1 mb-1">
     <Breadcrumb
       :apiType="$route.query.theme"
-      :city="spotDetail.City"
+      :city="currentCity"
       :name="spotDetail.Name"
     />
   </section>
 
   <!-- Breadcrumb - end -->
   <!-- carousel - start -->
-  <section class="container mb-1 mb-lg-2">
+  <section v-if="Object.keys(spotDetail.Picture).length > 0"
+  class="container mb-1 mb-lg-2">
     <Carousel :carsouelList="spotDetail.Picture" />
   </section>
   <!-- carsousel - end -->
@@ -39,7 +40,7 @@
     class="container mb-3dot75 bg-gray-light bgLgNone pb-1dot875 pb-lg-0"
   >
     <div class="row">
-      <div class="col-12 col-lg-6">
+      <div v-if="infoList.length > 0" class="col-12 col-lg-6">
         <InfoList :infoList="infoList" />
       </div>
       <div class="col-12 col-lg-6">
@@ -159,7 +160,7 @@
   <!-- spot info and map -end -->
 
   <!-- popular spot - start -->
-  <section class="container mb-3 mb-lg-2">
+  <section v-if="moreSpotsList.length > 0" class="container mb-3 mb-lg-2">
     <div
       class="
         d-flex
@@ -209,6 +210,8 @@ export default {
       spotIDKey: this.$route.query.theme+'ID',
       spotNameKey: this.$route.query.theme+'Name',
       spotDetail: {},
+      cityList: [],
+      currentCity : {},
     };
   },
   computed: {
@@ -387,6 +390,16 @@ export default {
       _this.spotDetail.City = _this.spotDetail.City
         ? _this.spotDetail.City
         : _this.spotDetail.Address.slice(0, 3);
+
+      _this.cityList = await _this.getCityList();
+      if (_this.spotDetail.City) {
+        let city = _this.cityList.find((city) => {
+          return city.CityName === _this.spotDetail.City;
+        });
+        _this.currentCity = city;
+      }
+      console.log("_this.cityList", _this.cityList);
+      console.log("_this.spotDetail", _this.spotDetail);
 
       // 設定要被條列呈現的資訊
       await _this.getInfoList(_this.$route.query.theme);
