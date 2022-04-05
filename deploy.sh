@@ -11,7 +11,7 @@ cd dist
 
 # 一個複製 index檔 作為 404檔
 # 避免 vue router 在 history mode 下 github page url 失效
-cp index.html ./404.html
+# cp index.html ./404.html
 
 
 git init
