@@ -160,7 +160,7 @@
           placeholder="你想去哪裡？請輸入關鍵字"
           aria-label="搜尋欄，請填入關鍵字進行搜尋"
           v-model="keywords"
-          @keyup.enter="renewRouterQuery({ keywords: keywords })"
+          @keyup.enter="renewRouterQuery({ keywords: keywords });$event.target.blur()"
         />
       </div>
       <!-- keywords - end -->
@@ -305,7 +305,7 @@ export default {
   data() {
     return {
       currentTheme: this.$route.query.theme,
-      currentThemeName: this.$route.query.theme + "Name",
+      nameKey: this.$route.query.theme + "Name",
       currentCity: {},
 
       // vue loading overlay
@@ -333,7 +333,7 @@ export default {
     $route(from, to) {
       if (from.query.theme === to.query.theme) {
         this.currentTheme = this.$route.query.theme;
-        this.currentThemeName = this.$route.query.theme + "Name";
+        this.nameKey = this.$route.query.theme + "Name";
         this.renewSearchingResults();
       } else {
         this.$router.go();
@@ -469,7 +469,7 @@ export default {
         }
         if (keywords) {
           let reg = new RegExp(keywords);
-          includeKeywords = reg.test(spot[this.currentThemeName]);
+          includeKeywords = reg.test(spot[this.nameKey]) || reg.test(spot.City);
         }
         return sameCity && sameCategory && includeKeywords;
       });
@@ -558,7 +558,7 @@ export default {
       var reg = new RegExp(keywords);
       console.log(reg);
       this.resultSpotsList = this.resultSpotsList.filter(function (spot) {
-        return reg.test(spot[_this.currentThemeName]);
+        return reg.test(spot[_this.nameKey]);
       });
     },
   },
@@ -575,20 +575,6 @@ export default {
       ) {
         _this.stageOfResultShowing += 1;
       }
-      // console.log(
-      //   "window.scrollY",
-      //   window.scrollY,
-      //   " window.innerHeight",
-      //   window.innerHeight,
-      //   "document.querySelector(body).clientHeight",
-      //   document.querySelector("body").clientHeight
-      // );
-
-      console.log(
-        "window.scrollY+10<=latestScrollY",
-        window.scrollY + 10,
-        latestScrollY
-      );
 
       if (window.scrollY <= latestScrollY) {
         searchingForm.style.top = "0px";

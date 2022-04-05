@@ -55,7 +55,7 @@ export default {
           this.theme = "節慶活動";
           break;
         case "Restaurant":
-          this.theme = "在地美食";
+          this.theme = "品嚐美食";
           break;
       }
     },
