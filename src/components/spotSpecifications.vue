@@ -1,9 +1,9 @@
 <template>
   <ul class="m-0 px-0 py-1dot875 p-lg-1dot875 bg-gray-light radiusLg12px">
     <li
-      v-for="(item, i) in infoList"
+      v-for="(item, i) in spotSpecifications"
       :key="i"
-      :class="{ 'mb-0dot75': i !== infoList.length - 1 }"
+      :class="{ 'mb-0dot75': i !== spotSpecifications.length - 1 }"
       class=""
     >
       <p class="d-inline fs-5dot125 fsLg5 fw-bold">{{ item.infoTitle }}</p>
@@ -15,8 +15,8 @@
 
 <script>
 export default {
-  name: "infoList",
-  props: ["infoList"],
+  name: "spotSpecifications",
+  props: ["spotSpecifications"],
 };
 </script>
 <style scoped lang="scss"></style>

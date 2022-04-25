@@ -594,10 +594,10 @@ export default {
   async created() {
     var _this = this;
     // 取得台灣所有的縣市名稱
-    _this.cityList = await _this.getCityList();
+    _this.cityList = await _this.getAllCitiesInTaiwan();
 
     // 如果進入搜尋頁面時，已有指定的搜尋參數
-    // 例如當使用者從 spotDetail 的 附近美食btn 點進來時
+    // 例如當使用者從 spot 的 附近美食btn 點進來時
     // 依據搜尋參數（例如美食與座標）取得搜尋結果
     await _this.organizeCategoriesOfCurrentTheme();
 

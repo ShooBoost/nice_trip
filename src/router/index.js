@@ -8,10 +8,10 @@ const routes = [
     component: Home,
   },
   {
-    path: "/spotDetail",
-    name: "spotDetail",
+    path: "/spot",
+    name: "spot",
     component: () =>
-      import("../views/spotDetail.vue"),
+      import("../views/spot.vue"),
   },{
     path: "/searching",
     name: "searching",

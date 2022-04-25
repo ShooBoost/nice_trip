@@ -24,7 +24,7 @@
     >
       <router-link
         v-if="areWordsOnImg"
-        :to="'/spotDetail?theme=' + apiType + '&id=' + spot[spotIDKey]"
+        :to="'/spot?theme=' + apiType + '&id=' + spot[spotIDKey]"
         target="_blank"
         class="
           w-100

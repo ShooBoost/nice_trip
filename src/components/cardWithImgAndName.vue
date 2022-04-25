@@ -1,7 +1,7 @@
 <template>
   <router-link
     class="w-100 h-100"
-    :to="'/spotDetail?theme=' + apiType + '&id=' + spotId"
+    :to="'/spot?theme=' + apiType + '&id=' + spotId"
     target="_blank"
   >
     <div

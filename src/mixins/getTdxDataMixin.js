@@ -90,7 +90,7 @@ export default {
       }
     },
 
-    async getCityList() {
+    async getAllCitiesInTaiwan() {
       var apiUrl =
         "https://gist.motc.gov.tw/gist_api/V3/Map/Basic/City?$format=JSON";
 
@@ -98,7 +98,7 @@ export default {
         let res = await axios.get(apiUrl, {
           headers: this.getAuthorizationHeader(),
         });
-        // console.log(" getCityList", apiUrl, res.data);
+        // console.log(" getAllCitiesInTaiwan", apiUrl, res.data);
         return await res.data;
       } catch (err) {
         console.log(err);

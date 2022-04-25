@@ -4,7 +4,7 @@
       class="col col-12 col-lg-6 d-flex mb-0dot75 hoverImgBigger"
       v-for="(spot, i) in spotsList"
       :key="i"
-      :to="'/spotDetail?theme='+apiType+'&id='+spot[spotIDKey]"
+      :to="'/spot?theme='+apiType+'&id='+spot[spotIDKey]"
       target="_blank"
     >
       <div

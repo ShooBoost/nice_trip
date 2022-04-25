@@ -44,7 +44,7 @@
   >
     <div class="row">
       <div v-if="spotSpecifications.length > 0" class="col-12 col-lg-6">
-        <InfoList :infoList="spotSpecifications" />
+        <SpotSpecifications :spotSpecifications="spotSpecifications" />
       </div>
       <!-- map 與 周邊資訊 - start -->
       <div class="col-12 col-lg-6">
@@ -195,14 +195,20 @@
 import Breadcrumb from "@/components/breadcrumb.vue";
 import Carousel from "@/components/carousel.vue";
 import SpotMap from "@/components/spotMap.vue";
-import InfoList from "@/components/infoList.vue";
+import SpotSpecifications from "@/components/spotSpecifications.vue";
 import CarouselOnMobile from "@/components/carouselOnMobile.vue";
 
 // 自製的 mixin
 import getTdxDataMixin from "@/mixins/getTdxDataMixin";
 
 export default {
-  components: { Carousel, CarouselOnMobile, Breadcrumb, SpotMap, InfoList },
+  components: {
+    Carousel,
+    CarouselOnMobile,
+    Breadcrumb,
+    SpotMap,
+    SpotSpecifications,
+  },
   mixins: [getTdxDataMixin],
   data() {
     return {
@@ -236,7 +242,7 @@ export default {
     otherSpots() {
       let _this = this;
       let spots;
-      return (async function(){
+      return (async function () {
         spots = await _this.getSpotsFromTdx({
           apiType: _this.$route.query.theme,
           select: ["Picture", _this.nameKey, "Address", "City", _this.IDKey],
@@ -250,8 +256,8 @@ export default {
         spots.forEach(async function (item) {
           item.City = item.City ? item.City : item.Address.slice(0, 3);
         });
-        return await spots
-      })()
+        return await spots;
+      })();
     },
   },
   methods: {
@@ -398,7 +404,7 @@ export default {
       ? _this.spot.City
       : _this.spot.Address.slice(0, 3);
 
-    _this.allCitiesInTaiwan = await _this.getCityList();
+    _this.allCitiesInTaiwan = await _this.getAllCitiesInTaiwan();
     if (_this.spot.City) {
       let city = _this.allCitiesInTaiwan.find((city) => {
         return city.CityName === _this.spot.City;
@@ -409,41 +415,22 @@ export default {
     // 設定要被條列呈現的資訊
     await _this.getspotSpecifications(_this.$route.query.theme);
 
-     _this.otherSpots = await _this.getSpotsFromTdx({
-          apiType: _this.$route.query.theme,
-          select: ["Picture", _this.nameKey, "Address", "City", _this.IDKey],
-          orderby: ["SrcUpdateTime desc"],
-          skip: ["1"],
-          top: ["10"],
-          spatialFilter: [
-            `nearby(${_this.spot.Position.PositionLat},${_this.spot.Position.PositionLon},10000)`,
-          ],
-        });
-        console.log(_this.otherSpots)
-      await _this.otherSpots.forEach(async function (item) {
-          item.City = item.City ? item.City : item.Address.slice(0, 3);
-        });
+    _this.otherSpots = await _this.getSpotsFromTdx({
+      apiType: _this.$route.query.theme,
+      select: ["Picture", _this.nameKey, "Address", "City", _this.IDKey],
+      orderby: ["SrcUpdateTime desc"],
+      skip: ["1"],
+      top: ["10"],
+      spatialFilter: [
+        `nearby(${_this.spot.Position.PositionLat},${_this.spot.Position.PositionLon},10000)`,
+      ],
+    });
+    console.log(_this.otherSpots);
+    await _this.otherSpots.forEach(async function (item) {
+      item.City = item.City ? item.City : item.Address.slice(0, 3);
+    });
   },
   watch: {
-    // spot: function () {
-    //   var _this = this;
-    //   (async function () {
-    //     _this.otherSpots = await _this.getSpotsFromTdx({
-    //       apiType: _this.$route.query.theme,
-    //       select: ["Picture", _this.nameKey, "Address", "City", _this.IDKey],
-    //       orderby: ["SrcUpdateTime desc"],
-    //       skip: ["1"],
-    //       top: ["10"],
-    //       spatialFilter: [
-    //         `nearby(${_this.spot.Position.PositionLat},${_this.spot.Position.PositionLon},10000)`,
-    //       ],
-    //     });
-    //     _this.otherSpots.forEach(async function (item) {
-    //       item.City = item.City ? item.City : item.Address.slice(0, 3);
-    //     });
-    //     console.log("_this.otherSpots", _this.otherSpots);
-    //   })();
-    // },
   },
 };
 </script>
