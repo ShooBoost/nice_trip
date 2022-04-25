@@ -19,4 +19,3 @@ export default {
   props: ["spotSpecifications"],
 };
 </script>
-<style scoped lang="scss"></style>

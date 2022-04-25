@@ -42,4 +42,3 @@ export default {
   props: {},
 };
 </script>
-<style scoped lang="scss"></style>

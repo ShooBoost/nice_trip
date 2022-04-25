@@ -617,16 +617,6 @@ export default {
       // this.getSearchingResults();
       this.renewSearchingResults();
     }
-
-    // else if (this.$route.query.keywords) {
-    //   this.keywords = this.$route.query.keywords;
-    //   this.getSearchingResults();
-    // }
-
-    // if (this.$route.query.keywords) {
-    //   this.filterSpotsByKeyword();
-    // }
   },
 };
 </script>
-<style lang="scss"></style>

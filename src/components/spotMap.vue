@@ -64,4 +64,3 @@ location_on
   },
 };
 </script>
-<style lang="scss"></style>
