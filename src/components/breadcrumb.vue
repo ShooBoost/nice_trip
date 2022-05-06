@@ -9,7 +9,7 @@
           theme
         }}</router-link>
       </li>
-      <li class="breadcrumb-item" v-if="Object.keys(city).length !== 0">
+      <li class="breadcrumb-item" v-if="city && Object.keys(city).length !== 0">
         <router-link
           class="link-primary"
           :to="`/searching?theme=${apiType}&city=${city.City}`"

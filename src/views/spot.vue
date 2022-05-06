@@ -11,7 +11,7 @@
 
   <!-- carousel - start -->
   <section
-    v-if="Object.keys(spot.Picture).length > 0"
+    v-if="spot.Picture && Object.keys(spot.Picture).length > 0"
     class="container mb-1 mb-lg-2"
   >
     <Carousel :carsouelList="spot.Picture" />
@@ -47,7 +47,7 @@
         <SpotSpecifications :spotSpecifications="spotSpecifications" />
       </div>
       <!-- map 與 周邊資訊 - start -->
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6" v-if="spot.Position">
         <div class="row">
           <div class="col-12 mb-1dot25 mb-lg-2">
             <div
@@ -213,7 +213,7 @@ export default {
   data() {
     return {
       allCitiesInTaiwan: [],
-      // otherSpots: [],
+      otherSpots: [],
       map: {},
       IDKey: this.$route.query.theme + "ID",
       nameKey: this.$route.query.theme + "Name",
@@ -239,29 +239,9 @@ export default {
       }
       return theme;
     },
-    otherSpots() {
-      let _this = this;
-      let spots;
-      return (async function () {
-        spots = await _this.getSpotsFromTdx({
-          apiType: _this.$route.query.theme,
-          select: ["Picture", _this.nameKey, "Address", "City", _this.IDKey],
-          orderby: ["SrcUpdateTime desc"],
-          skip: ["1"],
-          top: ["10"],
-          spatialFilter: [
-            `nearby(${_this.spot.Position.PositionLat},${_this.spot.Position.PositionLon},10000)`,
-          ],
-        });
-        spots.forEach(async function (item) {
-          item.City = item.City ? item.City : item.Address.slice(0, 3);
-        });
-        return await spots;
-      })();
-    },
   },
   methods: {
-    getspotSpecifications(theme) {
+    getspotSpecifications(theme=this.$route.query.theme) {
       switch (theme) {
         case "ScenicSpot":
           this.spotSpecifications = [
@@ -354,83 +334,84 @@ export default {
       });
     },
   },
-  async created() {
+  created() {
     let _this = this;
-    let spotList = await _this.getSpotsFromTdx({
-      apiType: `${_this.$route.query.theme}`,
-      filter: [`${_this.$route.query.theme}ID eq '${_this.$route.query.id}'`],
-    });
-    let spot = spotList[0];
-    // 整理景點料格式
-    _this.spot = await {
-      ...spot,
-      Name: spot[_this.nameKey],
-      Description: spot.DescriptionDetail
-        ? spot.DescriptionDetail
-        : spot.Description,
-      Cycle: spot.Cycle ? ";" + spot.Cycle : "",
-      Picture: [
-        {
-          Picture: {
-            PictureUrl1: spot.Picture.PictureUrl1,
-            PictureDescription1: spot.Picture.PictureDescription1,
-          },
-        },
-        {
-          Picture: {
-            PictureUrl1: spot.Picture.PictureUrl2,
-            PictureDescription1: spot.Picture.PictureDescription2,
-          },
-        },
-        {
-          Picture: {
-            PictureUrl1: spot.Picture.PictureUrl3,
-            PictureDescription1: spot.Picture.PictureDescription3,
-          },
-        },
-      ],
-    };
-    _this.spot.Picture = await _this.spot.Picture.filter((item) => {
-      return item.Picture.PictureUrl1;
-    });
-    // 整理所數類別
-    let classList = await [spot.Class, spot.Class1, spot.Class2, spot.Class3];
-    _this.spot.classList = classList.filter((item) => {
-      return item;
-    });
-
-    // 取得所在城市名稱
-    _this.spot.City = _this.spot.City
-      ? _this.spot.City
-      : _this.spot.Address.slice(0, 3);
-
-    _this.allCitiesInTaiwan = await _this.getAllCitiesInTaiwan();
-    if (_this.spot.City) {
-      let city = _this.allCitiesInTaiwan.find((city) => {
-        return city.CityName === _this.spot.City;
+    (async function () {
+      let spotList = await _this.getSpotsFromTdx({
+        apiType: `${_this.$route.query.theme}`,
+        filter: [`${_this.$route.query.theme}ID eq '${_this.$route.query.id}'`],
       });
-      _this.spotCity = city;
-    }
+      let spot = spotList[0];
+      // 整理景點料格式
+      _this.spot = await {
+        ...spot,
+        Name: spot[_this.nameKey],
+        Description: spot.DescriptionDetail
+          ? spot.DescriptionDetail
+          : spot.Description,
+        Cycle: spot.Cycle ? ";" + spot.Cycle : "",
+        Picture: [
+          {
+            Picture: {
+              PictureUrl1: spot.Picture.PictureUrl1,
+              PictureDescription1: spot.Picture.PictureDescription1,
+            },
+          },
+          {
+            Picture: {
+              PictureUrl1: spot.Picture.PictureUrl2,
+              PictureDescription1: spot.Picture.PictureDescription2,
+            },
+          },
+          {
+            Picture: {
+              PictureUrl1: spot.Picture.PictureUrl3,
+              PictureDescription1: spot.Picture.PictureDescription3,
+            },
+          },
+        ],
+      };
+      _this.spot.Picture = await _this.spot.Picture.filter((item) => {
+        return item.Picture.PictureUrl1;
+      });
+      // 整理所數類別
+      let classList = await [spot.Class, spot.Class1, spot.Class2, spot.Class3];
+      _this.spot.classList = classList.filter((item) => {
+        return item;
+      });
 
-    // 設定要被條列呈現的資訊
-    await _this.getspotSpecifications(_this.$route.query.theme);
+      // 取得所在城市名稱
+      _this.spot.City = _this.spot.City
+        ? _this.spot.City
+        : _this.spot.Address.slice(0, 3);
 
-    _this.otherSpots = await _this.getSpotsFromTdx({
-      apiType: _this.$route.query.theme,
-      select: ["Picture", _this.nameKey, "Address", "City", _this.IDKey],
-      orderby: ["SrcUpdateTime desc"],
-      skip: ["1"],
-      top: ["10"],
-      spatialFilter: [
-        `nearby(${_this.spot.Position.PositionLat},${_this.spot.Position.PositionLon},10000)`,
-      ],
-    });
-    console.log(_this.otherSpots);
-    await _this.otherSpots.forEach(async function (item) {
-      item.City = item.City ? item.City : item.Address.slice(0, 3);
-    });
+      _this.allCitiesInTaiwan = await _this.getAllCitiesInTaiwan();
+      if (_this.spot.City) {
+        let city = _this.allCitiesInTaiwan.find((city) => {
+          return city.CityName === _this.spot.City;
+        });
+        _this.spotCity = city;
+      }
+
+      // 設定要被條列呈現的資訊
+      _this.getspotSpecifications();
+
+      _this.otherSpots = await _this.getSpotsFromTdx({
+        apiType: _this.$route.query.theme,
+        select: ["Picture", _this.nameKey, "Address", "City", _this.IDKey],
+        orderby: ["SrcUpdateTime desc"],
+        skip: ["1"],
+        top: ["10"],
+        spatialFilter: [
+          `nearby(${_this.spot.Position.PositionLat},${_this.spot.Position.PositionLon},10000)`,
+        ],
+      });
+      for (spot of await _this.otherSpots) {
+        spot.City = spot.City ? spot.City : spot.Address.slice(0, 3);
+        // console.log('spot of others', spot)
+      }
+    })();
   },
-  watch: {
-  },
+  watch: {},
 };
 </script>

@@ -1,4 +1,4 @@
-import jsSHA from "jssha";
+import qs from "qs";
 import axios from "axios";
 
 export default {
@@ -51,20 +51,42 @@ export default {
       // console.log("apiUrl", apiUrl)
       return apiUrl;
     },
-    getAuthorizationHeader() {
-      //  填入自己 ID、KEY 開始
-      let AppID = "6881a6e19c3240089c9d8cc87f52f52e";
-      let AppKey = "z274IyT03M2HixJY5cAbZn-8ccs";
-      //  填入自己 ID、KEY 結束
-
-      let GMTString = new Date().toGMTString();
-      let ShaObj = new jsSHA("SHA-1", "TEXT");
-      ShaObj.setHMACKey(AppKey, "TEXT");
-      ShaObj.update("x-date: " + GMTString);
-      let HMAC = ShaObj.getHMAC("B64");
-      let Authorization = `hmac username="${AppID}",algorithm="hmac-sha1",headers="x-date",signature="${HMAC}"`;
-      return { Authorization: Authorization, "X-Date": GMTString };
+    async getAuthorizationHeader() {
+      const parameter = {
+        grant_type: "client_credentials",
+        client_id: "shooboost-0659506a-9440-4f49",
+        client_secret: "f075a3b1-3567-47d5-9926-e413ba6d3d42",
+      };
+      let auth_url = `https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token`;
+      try {
+        let res = await axios({
+          method: "POST",
+          url: auth_url,
+          data: qs.stringify(parameter),
+          headers: { "content-type": "application/x-www-form-urlencoded" },
+        });
+        let accesstoken = res.data;
+        return {
+          authorization: `Bearer ${accesstoken.access_token}`,
+        }
+      } catch (err) {
+        return err;
+      }
     },
+    // getAuthorizationHeader() {
+    //   //  填入自己 ID、KEY 開始
+    //   let AppID = "6881a6e19c3240089c9d8cc87f52f52e";
+    //   let AppKey = "z274IyT03M2HixJY5cAbZn-8ccs";
+    //   //  填入自己 ID、KEY 結束
+
+    //   let GMTString = new Date().toGMTString();
+    //   let ShaObj = new jsSHA("SHA-1", "TEXT");
+    //   ShaObj.setHMACKey(AppKey, "TEXT");
+    //   ShaObj.update("x-date: " + GMTString);
+    //   let HMAC = ShaObj.getHMAC("B64");
+    //   let Authorization = `hmac username="${AppID}",algorithm="hmac-sha1",headers="x-date",signature="${HMAC}"`;
+    //   return { Authorization: Authorization, "X-Date": GMTString };
+    // },
     async getSpotsFromTdx(apiTypeAndParameters) {
       var _this = this;
       var apiUrl = _this.getSpotApiUrl(apiTypeAndParameters);
@@ -79,7 +101,7 @@ export default {
           // "https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?$select=Picture%2C%20Name%2C%20Address%2C%20ZipCode&$orderby=SrcUpdateTime%20desc&$top=12&$skip=10&$format=JSON",
           `${apiUrl}`,
           {
-            headers: this.getAuthorizationHeader(),
+            headers: await this.getAuthorizationHeader(),
           }
         );
         // console.log(apiUrl, res.data);
@@ -92,11 +114,11 @@ export default {
 
     async getAllCitiesInTaiwan() {
       var apiUrl =
-        "https://gist.motc.gov.tw/gist_api/V3/Map/Basic/City?$format=JSON";
+        "https://tdx.transportdata.tw/api/basic/v2/Basic/City?%24format=JSON";
 
       try {
         let res = await axios.get(apiUrl, {
-          headers: this.getAuthorizationHeader(),
+          headers: await this.getAuthorizationHeader(),
         });
         // console.log(" getAllCitiesInTaiwan", apiUrl, res.data);
         return await res.data;

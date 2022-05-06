@@ -499,7 +499,7 @@ export default {
         let city = this.cityList.find((city) => {
           return city.City === item || city.CityName === item;
         });
-        console.log("city", city, "item", item, "this.cityList", this.cityList);
+        // console.log("city", city, "item", item, "this.cityList", this.cityList);
         this.currentCity = city;
         this.apiParameters.city = item.City ? item.City : item;
         query.city = this.apiParameters.city;
@@ -549,14 +549,14 @@ export default {
       this.resultSpotsList = await _this.getSpotsFromTdx(_this.apiParameters);
       this.showResults = true;
       this.filterSpotsByKeyword({});
-      console.log("this.resultSpotsList", this.resultSpotsList);
+      // console.log("this.resultSpotsList", this.resultSpotsList);
     },
     filterSpotsByKeyword({ keywords = this.keywords }) {
-      console.log("filterSpotsByKeyword");
+      // console.log("filterSpotsByKeyword");
       // if(!keywords)
       var _this = this;
       var reg = new RegExp(keywords);
-      console.log(reg);
+      // console.log(reg);
       this.resultSpotsList = this.resultSpotsList.filter(function (spot) {
         return reg.test(spot[_this.nameKey]);
       });
@@ -578,15 +578,8 @@ export default {
 
       if (window.scrollY <= latestScrollY) {
         searchingForm.style.top = "0px";
-        // searchingForm.classList.add('class', 'visible')
-        // searchingForm.classList.remove('class', 'topNegative300')
       } else {
         searchingForm.style.top = "-300px";
-        // searchingForm.classList.add('class', 'topNegative300')
-        // searchingForm.classList.remove('class', 'visible')
-
-        // searchingForm.setAttribute('class', 'invisible')
-        // searchingForm.classList.toggle('invisible')
       }
       latestScrollY = window.scrollY;
     });
@@ -612,9 +605,7 @@ export default {
       this.$route.query.category ||
       this.$route.query.keywords
     ) {
-      console.log(this.$route.query);
-      // this.replaceRouterByNewCityAndCategory({ city: this.$route.query.city });
-      // this.getSearchingResults();
+      // console.log(this.$route.query);
       this.renewSearchingResults();
     }
   },
