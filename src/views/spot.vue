@@ -328,7 +328,7 @@ export default {
           ];
           break;
       }
-      console.log("get getspotSpecifications");
+      // console.log("get getspotSpecifications");
       this.spotSpecifications = this.spotSpecifications.filter((item) => {
         return item.infoConent;
       });

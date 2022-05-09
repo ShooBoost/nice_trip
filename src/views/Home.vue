@@ -215,7 +215,7 @@ export default {
         top: ["10"],
         skip: ["16"],
       });
-      console.log("_this.moreRestaurantsList", await _this.moreRestaurantsList);
+      // console.log("_this.moreRestaurantsList", await _this.moreRestaurantsList);
     })();
     
     // 取得景點資料
@@ -253,7 +253,7 @@ export default {
           _this.moreActivitiesList.push(item);
         }
       });
-      console.log(_this.moreActivitiesList);
+      // console.log(_this.moreActivitiesList);
     })();
   },
   methods: {

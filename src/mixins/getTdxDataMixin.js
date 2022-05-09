@@ -46,8 +46,8 @@ export default {
         apiParameterString = apiParameterList.join("&");
         apiParameterString += "&";
       }
-
-      let apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Tourism/${apiType}?${apiParameterString}$format=JSON`;
+      // let apiUrl = `https://ptx.transportdata.tw/MOTC/v2/Tourism/${apiType}?${apiParameterString}$format=JSON`;
+      let apiUrl = `https://tdx.transportdata.tw/api/basic/v2/Tourism/${apiType}?${apiParameterString}$format=JSON`;
       // console.log("apiUrl", apiUrl)
       return apiUrl;
     },
@@ -73,20 +73,6 @@ export default {
         return err;
       }
     },
-    // getAuthorizationHeader() {
-    //   //  填入自己 ID、KEY 開始
-    //   let AppID = "6881a6e19c3240089c9d8cc87f52f52e";
-    //   let AppKey = "z274IyT03M2HixJY5cAbZn-8ccs";
-    //   //  填入自己 ID、KEY 結束
-
-    //   let GMTString = new Date().toGMTString();
-    //   let ShaObj = new jsSHA("SHA-1", "TEXT");
-    //   ShaObj.setHMACKey(AppKey, "TEXT");
-    //   ShaObj.update("x-date: " + GMTString);
-    //   let HMAC = ShaObj.getHMAC("B64");
-    //   let Authorization = `hmac username="${AppID}",algorithm="hmac-sha1",headers="x-date",signature="${HMAC}"`;
-    //   return { Authorization: Authorization, "X-Date": GMTString };
-    // },
     async getSpotsFromTdx(apiTypeAndParameters) {
       var _this = this;
       var apiUrl = _this.getSpotApiUrl(apiTypeAndParameters);
@@ -126,71 +112,71 @@ export default {
         console.log(err);
       }
     },
-    async getTdxGeoData({
-      apiType = "GeoCode",
-      address = "",
-      locX = "",
-      locY = "",
-    }) {
-      // apiType 為 GeoCode or GeoLocating
-      let apiUrl = "";
-      switch (apiType) {
-        case "GeoCode":
-          apiUrl = `https://gist.motc.gov.tw/gist_api/V3/Map/GeoCode/Coordinate/Address/${address}`;
-          break;
-        case "GeoLocating":
-          apiUrl = `https://gist.motc.gov.tw/gist_api/V3/Map/GeoLocating/District/LocationX/${locX}/LocationY/${locY}?$format=JSON`;
-          break;
-      }
+    // async getTdxGeoData({
+    //   apiType = "GeoCode",
+    //   address = "",
+    //   locX = "",
+    //   locY = "",
+    // }) {
+    //   // apiType 為 GeoCode or GeoLocating
+    //   let apiUrl = "";
+    //   switch (apiType) {
+    //     case "GeoCode":
+    //       apiUrl = `https://gist.motc.gov.tw/gist_api/V3/Map/GeoCode/Coordinate/Address/${address}`;
+    //       break;
+    //     case "GeoLocating":
+    //       apiUrl = `https://gist.motc.gov.tw/gist_api/V3/Map/GeoLocating/District/LocationX/${locX}/LocationY/${locY}?$format=JSON`;
+    //       break;
+    //   }
 
-      try {
-        let res = await axios.get(`${apiUrl}`, {
-          headers: this.getAuthorizationHeader(),
-        });
-        // console.log(res);
+    //   try {
+    //     let res = await axios.get(`${apiUrl}`, {
+    //       headers: this.getAuthorizationHeader(),
+    //     });
+    //     console.log("+++++++getTdxGeoData+++++++++");
 
-        return await res.data;
-      } catch (err) {
-        console.log(err);
-        return await null;
-      }
-    },
+    //     return await res.data;
+    //   } catch (err) {
+    //     console.log(err);
+    //     return await null;
+    //   }
+    // },
 
-    async getCityName({ address, locX, locY }) {
-      if (locX && locY) {
-        let cityName = await this.getTdxGeoData({
-          apiType: "GeoLocating",
-          locX: locX,
-          locY: locY,
-        });
-        if (await cityName) {
-          return cityName[0].CityName;
-        }
-      } else if (address) {
-        let geoByAddress = await this.getTdxGeoData({
-          apiType: "GeoCode",
-          address: address,
-        });
-        geoByAddress = geoByAddress[0].Geometry.split(" ");
+    // async getCityName({ address, locX, locY }) {
+    //   if (locX && locY) {
+    //     let cityName = await this.getTdxGeoData({
+    //       apiType: "GeoLocating",
+    //       locX: locX,
+    //       locY: locY,
+    //     });
+    //     if (await cityName) {
+    //       return cityName[0].CityName;
+    //     }
+    //   } else if (address) {
+    //     let geoByAddress = await this.getTdxGeoData({
+    //       apiType: "GeoCode",
+    //       address: address,
+    //     });
+    //     geoByAddress = geoByAddress[0].Geometry.split(" ");
 
-        let [locXByAddress, locYByAddress] = [
-          geoByAddress[1].replace("(", ""),
-          geoByAddress[2].replace(")", ""),
-        ];
-        let geoByXY = await this.getTdxGeoData({
-          apiType: "GeoLocating",
-          locX: locXByAddress,
-          locY: locYByAddress,
-        });
+    //     let [locXByAddress, locYByAddress] = [
+    //       geoByAddress[1].replace("(", ""),
+    //       geoByAddress[2].replace(")", ""),
+    //     ];
+    //     let geoByXY = await this.getTdxGeoData({
+    //       apiType: "GeoLocating",
+    //       locX: locXByAddress,
+    //       locY: locYByAddress,
+    //     });
 
-        // 會不會我一開始直接切地址前三個字就好了 XD + QAQ
-        let cityName = geoByXY.CityName
-          ? geoByXY.CityName
-          : address.slice(0, 3);
-        return await cityName;
-      } else {
-        return "";
-      }
-    },
+    //     // 會不會我一開始直接切地址前三個字就好了 XD + QAQ
+    //     let cityName = geoByXY.CityName
+    //       ? geoByXY.CityName
+    //       : address.slice(0, 3);
+    //     return await cityName;
+    //   } else {
+    //     return "";
+    //   }
+    // },
   },
 };
